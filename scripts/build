@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+# Parse input arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -b|--board)
+            BOARD="$2"
+            shift
+            ;;
+
+        -s|--shield)
+            SHIELD="$2"
+            shift
+            ;;
+
+        -v|--version)
+            ZEPHYR_VERSION="$2"
+            shift
+            ;;
+
+        -o|--output-dir)
+            HOST_OUTPUT_DIR="$2"
+            shift
+            ;;
+
+        -c|--config-dir)
+            HOST_CONFIG_DIR="$2"
+            shift
+            ;;
+
+        --update)
+            UPDATE_WEST="true"
+            ;;
+
+        --clear-cache)
+            CLEAR_CACHE="true"
+            ;;
+
+        --)
+            WEST_OPTS="${@:2}"
+            break
+            ;;
+
+        *)
+            echo "Unknown option $1"
+            exit 1
+            ;;
+
+    esac
+    shift
+done
+
+# Set defaults
+[[ -z $BOARD ]] && echo -n "You must specify a board" && exit 1
+
+[[ -z $ZEPHYR_VERSION ]] && ZEPHYR_VERSION="3.2"
+
+[[ -z $HOST_CONFIG_DIR ]] && HOST_CONFIG_DIR="$HOME/zmk-config"
+[[ -z $HOST_OUTPUT_DIR ]] && HOST_OUTPUT_DIR="$HOST_CONFIG_DIR/output"
+
+[[ -z $CLEAR_CACHE ]] && CLEAR_CACHE="false"
+[[ -z $UPDATE_WEST ]] && UPDATE_WEST="false"
+
+# +---------------+
+# | SET VARIABLES |
+# +---------------+
+
+DOCKER_IMG="zmkfirmware/zmk-build-arm:$ZEPHYR_VERSION"
+
+DOCKER_WORKING_DIR="/workspace/main"
+DOCKER_CONFIG_DIR="/workspace/user-config"
+DOCKER_OUTPUT_DIR="/workspace/output"
+DOCKER_BUILD_DIR="/workspace/build"
+
+DOCKER_BIN="docker"
+
+BUILD_NAME="${SHIELD:-$BOARD}"
+LOGFILE="zmk_build_${BUILD_NAME}.log"
+
+DOCKER_CMD="$DOCKER_BIN run --rm \
+    --mount type=bind,source=$HOST_CONFIG_DIR,target=$DOCKER_CONFIG_DIR,readonly \
+    --mount type=bind,source=$HOST_OUTPUT_DIR,target=$DOCKER_OUTPUT_DIR \
+    --mount type=volume,source=zmk-build-$ZEPHYR_VERSION,target=$DOCKER_WORKING_DIR \
+    --mount type=volume,source=zmk-build-root-$ZEPHYR_VERSION,target=/root"
+
+SUFFIX="${ZEPHYR_VERSION}_docker"
+BOARD_BUILD_DIR="$DOCKER_BUILD_DIR/${BUILD_NAME}_$SUFFIX"
+
+shield=${SHIELD:+-DSHIELD=$SHIELD}
+
+# +--------------------+
+# | BUILD THE FIRMWARE |
+# +--------------------+
+
+if [[ $CLEAR_CACHE = true ]]
+then
+    $DOCKER_BIN volume rm $($DOCKER_BIN volume ls -q | grep "^zmk-.*-$ZEPHYR_VERSION$")
+    UPDATE_WEST="true"
+fi
+
+$DOCKER_CMD -w $DOCKER_WORKING_DIR $DOCKER_IMG /bin/bash -c " \
+    cp -r $DOCKER_CONFIG_DIR/config $DOCKER_WORKING_DIR/ \
+    && if [[ ! -f .west/config ]]; then west init -l $DOCKER_WORKING_DIR/config; fi \
+    && if [[ $UPDATE_WEST = true ]]; then west update && west zephyr-export; fi \
+    && west build -s zmk/app -d $BOARD_BUILD_DIR -b $BOARD $WEST_OPTS \
+       -- $shield -DZMK_CONFIG="$DOCKER_CONFIG_DIR/config" -Wno-dev > "$DOCKER_OUTPUT_DIR/$LOGFILE" 2>&1 \
+    || (cat \"$DOCKER_OUTPUT_DIR/$LOGFILE\" && exit 1) \
+    && echo -e \"Build log saved to '$HOST_OUTPUT_DIR/$LOGFILE'\n\" \
+    && tail -n 6 \"$DOCKER_OUTPUT_DIR/$LOGFILE\" | head -n 5 \
+    && if [[ -f $BOARD_BUILD_DIR/zephyr/zmk.uf2 ]]; then cp $BOARD_BUILD_DIR/zephyr/zmk.uf2 $DOCKER_OUTPUT_DIR/zmk_${BUILD_NAME}.uf2; fi \
+    "
