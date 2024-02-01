@@ -7,91 +7,765 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 
-#define DEF_L 0
-#define NAV_L 1
-#define NUM_L 2
-#define SYM_L 3
+/*****************************************************************************
+    Timings
+ *****************************************************************************/
 
-// Using layer taps on thumbs, having quick tap as well helps w/ repeating space/backspace
-&lt { quick_tap_ms = <200>; };
+/* How long to hold to activate home row mods for same side or mouse usage */
+#define HRM_TAPPING_TERM_MS 300
+
+/* Cool down after typing before home row mods can be used */
+#define HRM_PRIOR_IDLE_MS 150
+
+/* How quickly to double tap home row mods to hold down the tap action */
+#define HRM_QUICK_TAP_MS 200
+
+/* How quickly Combo keys must be pressed together */
+#define COMBO_TIMEOUT_MS 40
+
+/* Cooldown before combos will trigger from last keypress */
+#define COMBO_PRIOR_IDLE_MS 175
+
+/* How long thumb keys can be held before rolls send the higher layer key */
+#define THUMBS_TAPPING_TERM_MS 200
+
+/* How quickly to double tap thumb keys to hold the tap action */
+#define THUMBS_QUICK_TAP_MS 250
+
+/* How long Sticky Keys and Sticky Layers stay pressed */
+#define STICKY_KEY_RELEASE_AFTER_MS 600
+
+/* Macro timers; can be increased for systems that don't like 0ms Macros */
+#define FAST_MACRO_TAP_MS 0
+#define FAST_MACRO_WAIT_MS 0
+
+/*****************************************************************************
+    Key Positions
+ *****************************************************************************/
+
+/*
+                ╭────────────────────┬────────────────────╮
+                │  0   1   2   3   4 │  5   6   7   8   9 │
+                │ 10  11  12  13  14 │ 15  16  17  18  19 │
+                │     20  21  22     │     23  24  25     │
+                ╰───────────╮ 26  27 │ 28  29 ╭───────────╯
+                            ╰────────┴────────╯
+                ╭─────────────────────┬─────────────────────╮
+                │ LT4 LT3 LT2 LT1 LT0 │ RT0 RT1 RT2 RT3 RT4 │
+                │ LM4 LM3 LM2 LM1 LM0 │ RM0 RM1 RM2 RM3 RM4 │
+                │     LB2 LB1 LB0     │     RB0 RB1 RB2     │
+                ╰───────────╮ LH1 LH0 │ RH0 RH1 ╭───────────╯
+                            ╰─────────┴─────────╯
+*/
+
+#define LT0  4  // left-top row
+#define LT1  3
+#define LT2  2
+#define LT3  1
+#define LT4  0
+
+#define RT0  5  // right-top row
+#define RT1  6
+#define RT2  7
+#define RT3  8
+#define RT4  9
+
+#define LM0 14  // left-middle row
+#define LM1 13
+#define LM2 12
+#define LM3 11
+#define LM4 10
+
+#define RM0 15  // right-middle row
+#define RM1 16
+#define RM2 17
+#define RM3 18
+#define RM4 19
+
+#define LB0 22  // left-bottom row
+#define LB1 21
+#define LB2 20
+
+#define RB0 23  // right-bottom row
+#define RB1 24
+#define RB2 25
+
+#define LH0 27  // left thumb keys
+#define LH1 26
+
+#define RH0 28  // right thumb keys
+#define RH1 29
+
+#define KEYS_L LT0 LT1 LT2 LT3 LT4 LM0 LM1 LM2 LM3 LM4 LB0 LB1 LB2
+#define KEYS_R RT0 RT1 RT2 RT3 RT4 RM0 RM1 RM2 RM3 RM4 RB0 RB1 RB2
+#define THUMBS LH1 LH0 RH0 RH1
+
+/*****************************************************************************
+    Keycodes
+ *****************************************************************************/
+
+#define XXXXXXXXXXX &none
+#define ___________ &trans
+#define vvvvvvvvvvv &none  // use when illustrating held key on a layer
+
+#define _____A_____ &kp A
+#define _____B_____ &kp B
+#define _____C_____ &kp C
+#define _____D_____ &kp D
+#define _____E_____ &kp E
+#define _____F_____ &kp F
+#define _____G_____ &kp G
+#define _____H_____ &kp H
+#define _____I_____ &kp I
+#define _____J_____ &kp J
+#define _____K_____ &kp K
+#define _____L_____ &kp L
+#define _____M_____ &kp M
+#define _____N_____ &kp N
+#define _____O_____ &kp O
+#define _____P_____ &kp P
+#define _____Q_____ &kp Q
+#define _____R_____ &kp R
+#define _____S_____ &kp S
+#define _____T_____ &kp T
+#define _____U_____ &kp U
+#define _____V_____ &kp V
+#define _____W_____ &kp W
+#define _____X_____ &kp X
+#define _____Y_____ &kp Y
+#define _____Z_____ &kp Z
+
+#define _____0_____ &kp N0
+#define _____1_____ &kp N1
+#define _____2_____ &kp N2
+#define _____3_____ &kp N3
+#define _____4_____ &kp N4
+#define _____5_____ &kp N5
+#define _____6_____ &kp N6
+#define _____7_____ &kp N7
+#define _____8_____ &kp N8
+#define _____9_____ &kp N9
+
+#define _BACKSLASH_ &kp BACKSLASH
+#define ___COMMA___ &kp COMMA
+#define ___COLON___ &kp COLON
+#define ____DOT____ &kp DOT
+#define ___EQUAL___ &kp EQUAL
+#define ___GRAVE___ &kp GRAVE
+#define ___MINUS___ &kp MINUS
+#define ___SQUOT___ &kp SINGLE_QUOTE
+#define ___DQUOT___ &kp DOUBLE_QUOTES
+#define _SEMICOLON_ &kp SEMICOLON
+#define ___SLASH___ &kp SLASH
+#define ____AMP____ &kp AMPERSAND
+#define ___UNDRS___ &kp UNDERSCORE
+#define ___PLUS____ &kp PLUS
+#define ___PIPE____ &kp PIPE
+#define ___STAR____ &kp STAR
+#define ___HASH____ &kp HASH
+#define __DOLLAR___ &kp DOLLAR
+#define __ATSIGN___ &kp AT_SIGN
+#define ___EXCLM___ &kp EXCLAMATION
+#define ___QUEST___ &kp QUESTION
+#define __PERCENT__ &kp PERCENT
+#define ___CARET___ &kp CARET
+#define ___TILDE___ &kp TILDE
+
+#define ___LBRCK___ &kp LEFT_BRACKET      // [
+#define ___LBRCE___ &kp LEFT_BRACE        // {
+#define ___LPARN___ &kp LEFT_PARENTHESIS  // (
+#define ___LANGB___ &kp LESS_THAN         // <
+#define ___RBRCK___ &kp RIGHT_BRACKET     // ]
+#define ___RBRCE___ &kp RIGHT_BRACE       // }
+#define ___RPARN___ &kp RIGHT_PARENTHESIS // )
+#define ___RANGB___ &kp GREATER_THAN      // >
+
+#define _BACKSPACE_ &kp BSPC
+#define ____DEL____ &kp DELETE
+#define ___ENTER___ &kp ENTER
+#define ____ESC____ &kp ESCAPE
+#define ___SPACE___ &kp SPACE
+#define ____TAB____ &kp TAB
+
+#define ___HOME____ &kp HOME
+#define ____END____ &kp END
+#define __PAGE_UP__ &kp PG_UP
+#define _PAGE_DOWN_ &kp PG_DN
+#define ____INS____ &kp INS
+
+#define ___LEFT____ &kp LEFT
+#define ___RIGHT___ &kp RIGHT
+#define ____UP_____ &kp UP
+#define ___DOWN____ &kp DOWN
+
+#define ____F01____ &kp F1
+#define ____F02____ &kp F2
+#define ____F03____ &kp F3
+#define ____F04____ &kp F4
+#define ____F05____ &kp F5
+#define ____F06____ &kp F6
+#define ____F07____ &kp F7
+#define ____F08____ &kp F8
+#define ____F09____ &kp F9
+#define ____F10____ &kp F10
+#define ____F11____ &kp F11
+#define ____F12____ &kp F12
+
+#undef LCTL
+#undef RCTL
+
+#define LOPT LALT
+#define ROPT RALT
+#define LCTL LCTRL
+#define RCTL RCTRL
+
+#define ___SHIFT___ &kp LSFT
+
+/*****************************************************************************
+    Layers
+ *****************************************************************************/
+
+#define BASE 0
+#define NAV  1
+#define NAVM 2
+#define NAVT 3
+#define NUM  4
+#define NUMM 5
+#define NUMT 6
+#define SYM  7
+#define MOUS 8
+
+/* Base layers for combo scope */
+#define BASE_LAYERS BASE
+
+/*****************************************************************************
+    Basic C Macros
+ *****************************************************************************/
+
+/* Layer Helper */
+#define LAYER(name, layout) \
+    / { \
+        keymap { \
+            compatible = "zmk,keymap"; \
+            layer_ ## name { \
+                bindings = <layout>; \
+            }; \
+        }; \
+    };
+
+/* Combo helper */
+#define COMBO(NAME, TIMEOUT_MS, KEY_POSITIONS, LAYERS, BINDINGS) \
+    NAME { \
+        timeout-ms    = <TIMEOUT_MS>; \
+        key-positions = <KEY_POSITIONS>; \
+        layers        = <LAYERS>; \
+        bindings      = <BINDINGS>; \
+    }; \
+
+/* Create a ZMK Behavior without having to specify the name three times */
+#define BEHAVIOR(NAME, ...) \
+    / { \
+        behaviors { \
+            NAME: NAME { \
+                __VA_ARGS__ \
+            }; \
+        }; \
+    };
+
+/* Hold-Tap helper */
+#define HOLD_TAP(NAME, ...) \
+    BEHAVIOR(NAME, \
+        compatible = "zmk,behavior-hold-tap"; \
+        #binding-cells = <2>; \
+        __VA_ARGS__ \
+    )
+
+/* Tri-state helper */
+#define TRI_STATE(NAME, ...) \
+    BEHAVIOR(NAME, \
+        compatible = "zmk,behavior-tri-state"; \
+        #binding-cells = <0>; \
+        __VA_ARGS__ \
+    )
+
+/* Balanced Hold-Tap for home row mods and thumb layer keys */
+#define BALANCED_HOLD_TAP(NAME, ...) \
+    HOLD_TAP(NAME, \
+        flavor = "balanced"; /* Fast hold */ \
+        __VA_ARGS__ \
+    )
+
+/* Mod-Morph helper */
+#define MOD_MORPH(NAME, STANDARD, MORPHED, MODS, ...) \
+    BEHAVIOR(NAME, \
+        compatible = "zmk,behavior-mod-morph"; \
+        #binding-cells = <0>; \
+        bindings = <STANDARD>, <MORPHED>; \
+        mods = <(MODS)>; \
+        __VA_ARGS__ \
+    )
+
+/* Mod-Morph that sends another key when Opt is held */
+#define OPT_MORPH(NAME, PRIMARY, ALTERNATE) \
+    MOD_MORPH(NAME, PRIMARY, ALTERNATE, MOD_LALT|MOD_RALT)
+
+/* Mod-Morph that sends another key when Shift is held */
+#define SFT_MORPH(NAME, LOWER, UPPER) \
+    MOD_MORPH(NAME, LOWER, UPPER, MOD_LSFT|MOD_RSFT)
+
+/* Mod-Morph that sends another key when Ctrl is held */
+#define CTL_MORPH(NAME, LOWER, UPPER) \
+    MOD_MORPH(NAME, LOWER, UPPER, MOD_LCTL|MOD_RCTL)
+
+/* Macro helper */
+#define MACRO(NAME, ...) \
+    / { \
+        macros { \
+            ZMK_MACRO(NAME, __VA_ARGS__) \
+        }; \
+    };
+
+/* Instant key press Macro helper using defined timers */
+#define FAST_MACRO(NAME, BINDINGS) \
+    MACRO(NAME, \
+        tap-ms = <FAST_MACRO_TAP_MS>; \
+        wait-ms = <FAST_MACRO_WAIT_MS>; \
+        bindings = <BINDINGS>; \
+    )
+
+/*****************************************************************************
+    Behavior Changes
+ *****************************************************************************/
 
 / {
     behaviors {
-        hm: homerow_mods {
-            compatible = "zmk,behavior-hold-tap";
-            #binding-cells = <2>;
-            tapping_term_ms = <225>;
-            flavor = "tap-preferred";
-            bindings = <&kp>, <&kp>;
-        };
-    };
 
-    combos {
-        compatible = "zmk,combos";
-        combo_z {
-            timeout-ms = <50>;
-            key-positions = <20 21>;
-            bindings = <&kp Z>;
-        };
-        combo_b {
-            timeout-ms = <50>;
-            key-positions = <21 22>;
-            bindings = <&kp B>;
+        /* Let Caps Word continue when typing Underscore */
+        caps_word {
+            continue-list = <UNDERSCORE MINUS BACKSPACE DELETE>;
         };
 
-        combo_y {
-            timeout-ms = <50>;
-            key-positions = <23 24>;
-            bindings = <&kp Y>;
+        /* Use defined timer for Sticky Keys */
+        sticky_key {
+            release-after-ms = <STICKY_KEY_RELEASE_AFTER_MS>;
+            quick-release;
         };
 
-        combo_slash {
-            timeout-ms = <50>;
-            key-positions = <24 25>;
-            bindings = <&kp SLASH>;
-        };
-    };
-
-    keymap {
-        compatible = "zmk,keymap";
-
-        default_layer {
-            bindings = <
-                &kp Q      &kp W      &kp E       &kp R           &kp T        &kp H            &kp U          &kp I       &kp O      &kp P
-                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F     &kp G        &kp N            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm RGUI QUOT
-                           &kp X      &kp C       &kp V                                         &kp M          &kp COMMA  &kp DOT
-                                                  &lt NAV_L TAB  &kp RET       &lt NUM_L SPACE  &lt SYM_L BKSP
-            >;
-        };
-
-        nav_layer {
-            display-name = "Nav";
-            bindings = <
-                &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp UARW &kp PG_UP  &trans
-                &trans     &trans     &trans      &trans          &trans       &trans           &kp LARW       &kp DARW &kp RARW   &trans
-                           &trans     &trans      &trans                                        &kp END        &trans   &kp PG_DN
-                                                  &trans          &trans       &kp ESC          &kp DEL
-            >;
-        };
-
-        num_layer {
-            display-name = "Num";
-            bindings = <
-                &kp LBKT   &kp N7     &kp N8      &kp N9          &kp RBKT      &trans          &trans         &trans      &trans     &trans
-                &kp SEMI   &kp N4     &kp N5      &kp N6          &kp EQUAL     &trans          &trans         &trans      &trans     &trans
-                           &kp N1     &kp N2      &kp N3                                        &trans         &trans      &trans
-                                                  &kp N0          &kp MINUS     &trans          &trans
-            >;
-        };
-
-        sym_layer {
-            display-name = "Sym";
-            bindings = <
-                &kp LBRC   &kp LS(N7) &kp LS(N8)  &kp LS(N9)      &kp RBRC      &trans          &trans         &trans      &trans     &trans
-                &kp COLON  &kp LS(N4) &kp LS(N5)  &kp LS(N6)      &kp PLUS      &trans          &trans         &trans      &trans     &trans
-                           &kp LS(N1) &kp LS(N2)  &kp LS(N3)                                    &trans         &trans      &trans
-                                                  &kp LS(N0)      &kp UNDER     &trans          &trans
-            >;
+        /* Use defined timer for Sticky Layers */
+        sticky_layer {
+            release-after-ms = <STICKY_KEY_RELEASE_AFTER_MS>;
+            ignore-modifiers;          // allow chording sticky mods & layers
         };
     };
 };
+
+/*****************************************************************************
+    Layer Conditions
+*****************************************************************************/
+
+/* Conditional Layer helper */
+#define LAYER_CONDITION(NAME, IF, THEN) \
+    NAME { \
+        if-layers = <IF>; \
+        then-layer = <THEN>; \
+    };
+
+/ {
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        /* Layer lock feature for NAV layer */
+        LAYER_CONDITION(nav_mo,  NAVM, NAV)
+        LAYER_CONDITION(nav_tog, NAVT, NAV)
+
+        /* Layer lock feature for NUM layer */
+        LAYER_CONDITION(num_mo,  NUMM, NUM)
+        LAYER_CONDITION(num_tog, NUMT, NUM)
+    };
+};
+
+#define _LOCK__NAV_ &tog NAVT
+#define _LOCK__NUM_ &tog NUMT
+
+/*****************************************************************************
+    Alpha Hold-Tap
+ *****************************************************************************/
+
+/* "Timerless" Hold-Tap  using defined timers */
+#define ALPHA_HOLD_TAP_HELPER(NAME, KEY_POSITIONS, HOLD, TAP) \
+    BALANCED_HOLD_TAP(NAME, \
+        tapping-term-ms = <HRM_TAPPING_TERM_MS>;       /* Mouse usage */ \
+        quick-tap-ms = <HRM_QUICK_TAP_MS>;             /* Double tap repeat */ \
+        require-prior-idle-ms = <HRM_PRIOR_IDLE_MS>;   /* Lockout when typing quickly */ \
+        hold-trigger-key-positions = <KEY_POSITIONS>;  /* Use other hand */ \
+        hold-trigger-on-release;                       /* Enable chording mods */ \
+        bindings = <HOLD>, <TAP>; \
+    )
+
+ALPHA_HOLD_TAP_HELPER(alpha_mod_l, KEYS_R THUMBS, &kp, &kp)
+ALPHA_HOLD_TAP_HELPER(alpha_mod_r, KEYS_L THUMBS, &kp, &kp)
+ALPHA_HOLD_TAP_HELPER(alpha_layer_l, KEYS_L THUMBS, &mo, &kp)
+ALPHA_HOLD_TAP_HELPER(alpha_layer_r, KEYS_L THUMBS, &mo, &kp)
+
+#define m____T____m &alpha_mod_l LSFT T
+#define m____N____m &alpha_mod_l LGUI N
+#define m____C____m &alpha_mod_l LCTL C
+#define m____S____m &alpha_mod_l LOPT S
+
+#define m____A____m &alpha_mod_r RSFT A
+#define m____E____m &alpha_mod_r RGUI E
+#define m____I____m &alpha_mod_r RCTL I
+#define m____H____m &alpha_mod_r ROPT H
+
+#define l____M____l &alpha_layer_l MOUS M
+
+/*****************************************************************************
+    Macros
+ *****************************************************************************/
+
+/*
+ * Define macros for some very common SFBs.
+ * These will later have a combo assigned to them
+ */
+
+FAST_MACRO(macro_au, &kp A &kp U)
+FAST_MACRO(macro_ua, &kp U &kp A)
+FAST_MACRO(macro_eo, &kp E &kp O)
+FAST_MACRO(macro_oe, &kp O &kp E)
+
+/*****************************************************************************
+    Combos
+ *****************************************************************************/
+
+// use require-prior-idle-ms for combos
+#undef COMBO_HOOK
+#define COMBO_HOOK require-prior-idle-ms = <COMBO_PRIOR_IDLE_MS>;
+
+/* Default Combo: Limit to base layers and use defined timer for most Combos */
+#define DCOMBO(NAME, KEY_POSITIONS, BINDINGS) \
+    COMBO(NAME, COMBO_TIMEOUT_MS, KEY_POSITIONS, BASE_LAYERS, BINDINGS)
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        DCOMBO(combo_q,   LT3 LT2, &kp Q)
+        DCOMBO(combo_b,   LT2 LT1, &kp B)
+        DCOMBO(combo_x,   LB2 LB1, &kp X)
+        DCOMBO(combo_v,   LB1 LB0, &kp V)
+        DCOMBO(combo_j,   LM2 LM3, &kp J)
+        DCOMBO(combo_z,   LM3 LM4, &kp Z)
+        DCOMBO(combo_f,   LM1 LM2, &kp F)
+
+        DCOMBO(combo_au,  RM1 RM4, &macro_au)
+        DCOMBO(combo_ua,  RB0 RM4, &macro_ua)
+        DCOMBO(combo_eo,  RM2 RM4, &macro_eo)
+        DCOMBO(combo_oe,  RB1 RM4, &macro_oe)
+
+        DCOMBO(combo_bcspc, RT1 RT2, &kp BACKSPACE)
+        DCOMBO(combo_comma, RB0 RB1, &kp COMMA)
+        DCOMBO(combo_dot,   RB1 RB2, &kp DOT)
+
+        DCOMBO(mouse,   LT3 LT1, &smart_mouse)
+    };
+};
+
+/*****************************************************************************
+    Mouse
+        requires PR #1366
+ *****************************************************************************/
+
+#include <dt-bindings/zmk/mouse.h>
+
+/**
+ * I am not super pleased with the acceleration and velocity of the mouse,
+ * but it is so much better than having none.
+ */
+
+#define U_MOUSE_MOVE_MAX 1800
+&mmv {
+  acceleration-exponent = <1>;
+  time-to-max-speed-ms = <800>;
+  delay-ms = <0>;
+};
+
+#define U_MOUSE_SCROLL_MAX 16
+&msc {
+  acceleration-exponent = <2>;
+  time-to-max-speed-ms = <200>;
+  delay-ms = <0>;
+};
+
+#define SCROLL_UP 
+#define SCROLL_DOWN 
+#define SCROLL_LEFT 
+#define SCROLL_RIGHT 
+
+#define m_BUTTN_1_m &mkp MB1
+#define m_BUTTN_2_m &mkp MB2
+#define m_BUTTN_3_m &mkp MB3
+
+#define m_MOUSE_U_m &mmv MOVE_Y(-U_MOUSE_MOVE_MAX)
+#define m_MOUSE_D_m &mmv MOVE_Y(U_MOUSE_MOVE_MAX)
+#define m_MOUSE_L_m &mmv MOVE_X(-U_MOUSE_MOVE_MAX)
+#define m_MOUSE_R_m &mmv MOVE_X(U_MOUSE_MOVE_MAX)
+
+#define m_SCROL_U_m &msc SCRL_Y(-U_MOUSE_SCROLL_MAX) /* */
+#define m_SCROL_D_m &msc SCRL_Y(U_MOUSE_SCROLL_MAX)
+#define m_SCROL_L_m &msc SCRL_X(-U_MOUSE_SCROLL_MAX)
+#define m_SCROL_R_m &msc SCRL_X(U_MOUSE_SCROLL_MAX)
+
+TRI_STATE(smart_mouse,
+    bindings = <&tog MOUS>, <&none>, <&tog MOUS>;
+    ignored-key-positions = <LT1 LT3 LM1 LM2 LM3 LM4 RT1 RT2 RT3 RM1 RM2 RM3 RB0 RH0 RH1>;
+    ignored-layers = <MOUS>;
+)
+
+/*****************************************************************************
+    Base Layer Punctuation
+ *****************************************************************************/
+
+/*
+ * I am testing out whether having mod morphs on
+ * alpha keys output punctuation will work well.
+ * NOTE: This will conflict with my default danish alt keycodes.
+ */
+// OPT_MORPH(morph_a,      h____A____h,   ___COMMA___)
+// OPT_MORPH(morph_e,      h____E____h,   ____DOT____)
+// OPT_MORPH(morph_i,      h____I____h,   ___MINUS___)
+// OPT_MORPH(morph_h,      h____H____h,   _SEMICOLON_)
+// OPT_MORPH(morph_u,      _____U_____,   ___EQUAL___)
+// OPT_MORPH(morph_o,      _____O_____,   ___SLASH___)
+// OPT_MORPH(morph_y,      _____Y_____,   ___GRAVE___)
+
+OPT_MORPH(morph_quote,  ___SQUOT___,   ___EXCLM___)
+
+SFT_MORPH(_morph_lparn, ___LPARN___,   ___LBRCK___)
+SFT_MORPH(_morph_rparn, ___RPARN___,   ___RBRCK___)
+OPT_MORPH(morph_lparn,  &_morph_lparn, ___LBRCE___)
+OPT_MORPH(morph_rparn,  &_morph_rparn, ___RBRCE___)
+
+#define o____A____o &morph_a
+#define o____E____o &morph_e
+#define o____I____o &morph_i
+#define o____H____o &morph_h
+#define o____U____o &morph_u
+#define o____O____o &morph_o
+#define o____Y____o &morph_y
+#define o__SQUOT__o &morph_quote
+#define o__LPARN__o &morph_lparn
+#define o__RPARN__o &morph_rparn
+
+/******************************************************************************
+    Swapper
+        requires PR #1366
+ *****************************************************************************/
+
+// GUI+TAB
+TRI_STATE(app_swapper,
+    bindings = <&kt LGUI>, <&kp TAB>, <&kt LGUI>;
+    ignored-key-positions = <LT1>;
+)
+
+// GUI+§ (NON_US_BSLASH)
+TRI_STATE(win_swapper,
+    bindings = <&kt LGUI>, <&kp NON_US_BACKSLASH>, <&kt LGUI>;
+    ignored-key-positions = <LT1>;
+)
+
+// CTL+TAB
+TRI_STATE(tab_swapper,
+    bindings = <&kt LCTL>, <&kp TAB>, <&kt LCTL>;
+    ignored-key-positions = <LT1>;
+)
+
+#define __APPSWAP__ &app_swapper
+#define __WINSWAP__ &win_swapper
+#define __TABSWAP__ &tab_swapper
+
+/******************************************************************************
+    Sticky Mods
+ *****************************************************************************/
+
+#define s__SHIFT__s &sk LSFT
+#define s___CTL___s &sk LCTL
+#define s___OPT___s &sk LOPT
+#define s___GUI___s &sk LGUI
+
+/******************************************************************************
+    Cut / Copy / Paste / Select All / Undo / Redo
+ *****************************************************************************/
+
+#define ____CUT____ &kp LG(X)
+#define ___COPY____ &kp LG(C)
+#define ___PASTE___ &kp LG(V)
+#define __SELECT___ &kp LG(A)
+#define ___UNDO____ &kp LG(Z)
+#define ___REDO____ &kp LG(LS(Z))
+
+OPT_MORPH(kp_cut_select, ____CUT____, __SELECT___)
+OPT_MORPH(kp_copy_undo,   ___COPY____, ___UNDO____)
+OPT_MORPH(kp_paste_redo,  ___PASTE___, ___REDO____)
+
+#define o___CUT___o &kp_cut_select
+#define o__COPY___o &kp_copy_undo
+#define o__PASTE__o &kp_paste_redo
+
+/*****************************************************************************
+    Smart Number Layer
+ *****************************************************************************/
+
+TRI_STATE(smart_num,
+    bindings = <&tog NUM>, <&none>, <&tog NUM>;
+    ignored-key-positions = <LT1 LT2 LT3 LM1 LM2 LM3 LB0 LB1 LB2 LH0 RM1 RM2 RM3 RM4>;
+    ignored-layers = <NUM>;
+)
+
+#define __TOG_NUM__ &tog NUM
+
+/*****************************************************************************
+    Thumb Layer Keys
+ *****************************************************************************/
+
+/* Thumb layer tap with double tap to repeat */
+#define THUMB_HOLD_TAP(NAME, HOLD, TAP) \
+    BALANCED_HOLD_TAP(NAME, \
+        tapping-term-ms = <THUMBS_TAPPING_TERM_MS>;  /* Rolls send tap key */ \
+        quick-tap-ms = <THUMBS_QUICK_TAP_MS>;  /* 2x tap repeats */ \
+        bindings = <HOLD>, <TAP>; \
+    )
+
+THUMB_HOLD_TAP(thumb_layer_kp, &mo, &kp)
+
+#define l____R____l &thumb_layer_kp NAVM R
+#define l__ENTER__l &thumb_layer_kp SYM ENTER
+#define l__SPACE__l &thumb_layer_kp NUMM SPACE
+
+/*****************************************************************************
+    Layer Definitions
+/*****************************************************************************/
+
+#define l___SYM___l &mo SYM
+
+
+LAYER(base, 
+// ╭─────────────┬─────────────q─────────────b─────────────┬─────────────╮ ╭─────────────┬───────────bcspc───────────┬─────────────┬─────────────╮
+     ____ESC____   _____W_____   l____M____l   _____G_____   _____K_____     ___SLASH___   o__LPARN__o   o__RPARN__o   o__SQUOT__o   XXXXXXXXXXX
+// ├─────────────z─────────────j─────────────f─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     m____S____m   m____C____m   m____N____m   m____T____m   XXXXXXXXXXX     XXXXXXXXXXX   m____A____m   m____E____m   m____I____m   m____H____m
+// ╰─────────────┼─────────────x─────────────v─────────────┼─────────────┤ ├─────────────┼─────────────,─────────────.─────────────┼─────────────╯
+                   _____P_____   _____L_____   _____D_____                                 _____U_____   _____O_____   _____Y_____
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               l___SYM___l   l____R____l     l__SPACE__l   ___________ 
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(nav, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     __TABSWAP__   __WINSWAP__   __APPSWAP__   ___SHIFT___   ___________     ___________   _BACKSPACE_   ____UP_____   ___________   XXXXXXXXXXX
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     s___OPT___s   s___CTL___s   s___GUI___s   s__SHIFT__s   XXXXXXXXXXX     XXXXXXXXXXX   ___LEFT____   ___DOWN____   ___RIGHT___   ___ENTER___
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   o___CUT___o   o__COPY___o   o__PASTE__o                                 ____TAB____   __PAGE_UP__   _PAGE_DOWN_
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___________   vvvvvvvvvvv     _LOCK__NAV_   ___________
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(nav_momentary, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___________   vvvvvvvvvvv     ___________   ___________
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(nav_toggle, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___ENTER___   vvvvvvvvvvv     _LOCK__NAV_   _BACKSPACE_
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(num, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   _____7_____   _____8_____   _____9_____   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     _____0_____   _____4_____   _____5_____   _____6_____   XXXXXXXXXXX     XXXXXXXXXXX   s__SHIFT__s   s___GUI___s   s___CTL___s   s___OPT___s
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   _____1_____   _____2_____   _____3_____                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___________   _LOCK__NUM_     vvvvvvvvvvv   ___________
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(num_momentary, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___________   ___________     vvvvvvvvvvv   ___________
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(num_toggle, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___ENTER___   ___________     ___SPACE___   _BACKSPACE_
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(sym, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     ___________   ___________   ___________   ___________   XXXXXXXXXXX     XXXXXXXXXXX   ___________   ___________   ___MINUS___   _SEMICOLON_
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               vvvvvvvvvvv   ___________     ___________   ___________
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+LAYER(mouse, 
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   m_SCROL_D_m   m_MOUSE_U_m   m_SCROL_U_m   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     s___OPT___s   s___CTL___s   s___GUI___s   s__SHIFT__s   ___________     ___________   m_MOUSE_L_m   m_MOUSE_D_m   m_MOUSE_R_m   ___________
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 m_BUTTN_3_m   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___________   ___________     m_BUTTN_1_m   m_BUTTN_2_m
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+)
+
+/*
+// ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+// ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
+                   ___________   ___________   ___________                                 ___________   ___________   ___________
+//               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
+                                               ___________   ___________     ___________   ___________
+//                                           ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
+*/
+
+/* vim: set ft=c tw=150: */
