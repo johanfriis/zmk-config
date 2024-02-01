@@ -94,7 +94,7 @@ shield=${SHIELD:+-DSHIELD=$SHIELD}
 
 if [[ $CLEAR_CACHE = true ]]
 then
-    $DOCKER_BIN volume rm $($DOCKER_BIN volume ls -q | grep "^zmk-.*-$ZEPHYR_VERSION$")
+    $DOCKER_BIN volume rm zmk-build-$ZEPHYR_VERSION zmk-build-root-$ZEPHYR_VERSION
     UPDATE_WEST="true"
 fi
 
