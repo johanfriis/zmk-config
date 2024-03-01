@@ -463,8 +463,8 @@ FAST_MACRO(macro_oe, &kp O &kp E)
         DCOMBO(combo_oe,  RB1 RM4, &macro_oe)
 
         DCOMBO(combo_bcspc, RT1 RT2, &kp BACKSPACE)
-        DCOMBO(combo_comma, RB0 RB1, &kp COMMA)
-        DCOMBO(combo_dot,   RB1 RB2, &kp DOT)
+        /* DCOMBO(combo_comma, RB0 RB1, &kp COMMA) */
+        /* DCOMBO(combo_dot,   RB1 RB2, &kp DOT) */
 
         DCOMBO(mouse,   LT3 LT1, &smart_mouse)
     };
@@ -538,12 +538,18 @@ TRI_STATE(smart_mouse,
 // OPT_MORPH(morph_o,      _____O_____,   ___SLASH___)
 // OPT_MORPH(morph_y,      _____Y_____,   ___GRAVE___)
 
-OPT_MORPH(morph_quote,  ___SQUOT___,   ___EXCLM___)
+OPT_MORPH(morph_quote,  ___SQUOT___,   ___GRAVE___)
+OPT_MORPH(morph_slash,  ___SLASH___,   ___PIPE____)
 
 SFT_MORPH(_morph_lparn, ___LPARN___,   ___LBRCK___)
 SFT_MORPH(_morph_rparn, ___RPARN___,   ___RBRCK___)
 OPT_MORPH(morph_lparn,  &_morph_lparn, ___LBRCE___)
 OPT_MORPH(morph_rparn,  &_morph_rparn, ___RBRCE___)
+
+SFT_MORPH(_morph_dot,   ____DOT____,   ___MINUS___)
+SFT_MORPH(_morph_comma, ___COMMA___,   ___COLON___)
+OPT_MORPH(morph_dot,    &_morph_dot,   ___UNDRS___)
+OPT_MORPH(morph_comma,  &_morph_comma, ___EXCLM___)
 
 #define o____A____o &morph_a
 #define o____E____o &morph_e
@@ -553,6 +559,10 @@ OPT_MORPH(morph_rparn,  &_morph_rparn, ___RBRCE___)
 #define o____O____o &morph_o
 #define o____Y____o &morph_y
 #define o__SQUOT__o &morph_quote
+#define o__SLASH__o &morph_slash
+#define o___DOT___o &morph_dot
+#define o__COMMA__o &morph_comma
+
 #define o__LPARN__o &morph_lparn
 #define o__RPARN__o &morph_rparn
 
@@ -624,6 +634,17 @@ TRI_STATE(smart_num,
 #define __TOG_NUM__ &tog NUM
 
 /*****************************************************************************
+    Smart Space
+        Space is also caps word and layes hold
+ *****************************************************************************/
+
+&caps_word {  // mods deactivate caps-word, requires PR #1451
+    /delete-property/ ignore-modifiers;
+};
+
+SFT_MORPH(morph_space, ___SPACE___, &caps_word)
+
+/*****************************************************************************
     Thumb Layer Keys
  *****************************************************************************/
 
@@ -636,10 +657,11 @@ TRI_STATE(smart_num,
     )
 
 THUMB_HOLD_TAP(thumb_layer_kp, &mo, &kp)
+THUMB_HOLD_TAP(thumb_layer_space, &mo, &morph_space)
 
 #define l____R____l &thumb_layer_kp NAVM R
 #define l__ENTER__l &thumb_layer_kp SYM ENTER
-#define l__SPACE__l &thumb_layer_kp NUMM SPACE
+#define l__SPACE__l &thumb_layer_space NUMM 0
 
 /*****************************************************************************
     Layer Definitions
@@ -650,7 +672,7 @@ THUMB_HOLD_TAP(thumb_layer_kp, &mo, &kp)
 
 LAYER(base, 
 // ╭─────────────┬─────────────q─────────────b─────────────┬─────────────╮ ╭─────────────┬───────────bcspc───────────┬─────────────┬─────────────╮
-     ____ESC____   _____W_____   l____M____l   _____G_____   _____K_____     ___SLASH___   o__LPARN__o   o__RPARN__o   o__SQUOT__o   XXXXXXXXXXX
+     ____ESC____   _____W_____   l____M____l   _____G_____   _____K_____     o__SLASH__o   o__COMMA__o   o___DOT___o   o__SQUOT__o   XXXXXXXXXXX
 // ├─────────────z─────────────j─────────────f─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
      m____S____m   m____C____m   m____N____m   m____T____m   XXXXXXXXXXX     XXXXXXXXXXX   m____A____m   m____E____m   m____I____m   m____H____m
 // ╰─────────────┼─────────────x─────────────v─────────────┼─────────────┤ ├─────────────┼─────────────,─────────────.─────────────┼─────────────╯
@@ -734,9 +756,9 @@ LAYER(num_toggle,
 
 LAYER(sym, 
 // ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮ ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
-     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___________   ___________
+     ___________   ___________   ___________   ___________   ___________     ___________   ___________   ___________   ___STAR____   ___________
 // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-     ___________   ___________   ___________   ___________   XXXXXXXXXXX     XXXXXXXXXXX   ___________   ___________   ___MINUS___   _SEMICOLON_
+     ___________   ___________   ___________   ___________   XXXXXXXXXXX     XXXXXXXXXXX   ___LPARN___   ___RPARN___   ___EQUAL___   _SEMICOLON_
 // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────╯
                    ___________   ___________   ___________                                 ___________   ___________   ___________
 //               ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
