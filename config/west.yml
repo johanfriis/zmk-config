@@ -28,6 +28,8 @@ manifest:
       url-base: https://github.com/johanfriis
     - name: urob
       url-base: https://github.com/urob
+    - name: zaphod
+      url-base: https://github.com/amacleod
 
   projects:
     - name: zmk-helpers
@@ -40,6 +42,10 @@ manifest:
     - name: zmk-tri-state
       revision: main
       path: modules/tri-state
+    - name: zaphod-config
+      remote: zaphod
+      revision: main
+      path: modules/zaphod-config
 
     # ZMK with Zephyr namespaced under /zmk. This requires that ZMK imports
     # Zephyr with a path other than `zephyr` (as in `going-modular`).
