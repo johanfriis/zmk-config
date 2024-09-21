@@ -24,6 +24,8 @@ manifest:
   remotes:
     - name: upstream
       url-base: https://github.com/zmkfirmware
+    - name: johanfriis
+      url-base: https://github.com/johanfriis
     - name: urob
       url-base: https://github.com/urob
 
@@ -31,6 +33,7 @@ manifest:
     - name: zmk-helpers
       revision: main
       path: modules/helpers
+      remote: johanfriis
     - name: zmk-auto-layer
       revision: main
       path: modules/auto-layer
