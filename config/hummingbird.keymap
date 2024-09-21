@@ -2,7 +2,7 @@
 #include "zmk-helpers/key-labels/hummingbird.h"
 
 #define MOUSE_IGNORED_KEYS LT1 LT3 RT0 RT1 RT2 RT3 RT4 RM1 RM2 RM3 RB1 RB2 RH0 RH1
-#define REVERSE_TAB RH0
+#define REVERSE_SWAPPER RH0
 
 
 /* source the base definitions */

@@ -155,26 +155,26 @@ ZMK_TRI_STATE(smart_mouse,
     Swappers, requires PR #1366
  *****************************************************************************/
 
-#ifndef REVERSE_TAB
-    #define REVERSE_TAB LT1
+#ifndef REVERSE_SWAPPER
+    #define REVERSE_SWAPPER LT1
 #endif
 
 // GUI+TAB
 ZMK_TRI_STATE(app_swap,
     bindings = <&kt LGUI>, <&kp TAB>, <&kt LGUI>;
-    ignored-key-positions = <REVERSE_TAB>;
+    ignored-key-positions = <REVERSE_SWAPPER>;
 )
 
 // GUI+` (GRAVE)
 ZMK_TRI_STATE(win_swap,
     bindings = <&kt LGUI>, <&kp GRAVE>, <&kt LGUI>;
-    ignored-key-positions = <REVERSE_TAB>;
+    ignored-key-positions = <REVERSE_SWAPPER>;
 )
 
 // CTL+TAB
 ZMK_TRI_STATE(tab_swap,
     bindings = <&kt LCTL>, <&kp TAB>, <&kt LCTL>;
-    ignored-key-positions = <REVERSE_TAB>;
+    ignored-key-positions = <REVERSE_SWAPPER>;
 )
 
 #define __APP_SWP__ &app_swap
