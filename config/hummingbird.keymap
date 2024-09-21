@@ -5,8 +5,8 @@
 #define REVERSE_TAB RH0
 
 
-/* source the main keymap */
-#include "base.keymap"
+/* source the base definitions */
+#include "base.dtsi"
 
 #define __LCTL__A__ &hml LCTL A
 #define __LOPT__R__ &hml LALT R
