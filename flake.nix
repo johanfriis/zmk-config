@@ -36,6 +36,8 @@
           pkgs.ninja
           pkgs.qemu # needed for native_posix target
 
+          pkgs.bossa
+
           # Uncomment these if you don't have system-wide versions:
           # pkgs.gawk             # awk
           # pkgs.unixtools.column # column
