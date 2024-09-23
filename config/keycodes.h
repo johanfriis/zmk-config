@@ -105,16 +105,23 @@
 #define ____F11____ &kp F11
 #define ____F12____ &kp F12
 
+#define ____CPY____ &kp LG(C)
+#define ____CUT____ &kp LG(X)
+#define ___PASTE___ &kp LG(V)
+#define ___SLECT___ &kp LG(A)
+#define ___UN_DO___ &kp LG(Z)
+#define ___RE_DO___ &kp LG(LS(Z))
+
 #define ___BOOTL___ &bootloader
+
+#undef LCTL
+#undef RCTL
+
+#define LCTL LCTRL
+#define RCTL RCTRL
+#define LOPT LALT
+#define ROPT RALT
 
 #define ___SHIFT___ &kp LSFT
 #define ___LSHFT___ &kp LSFT
 #define ___RSHFT___ &kp RSFT
-
-#define LOPT LALT
-#define ROPT RALT
-
-#undef LCTL
-#undef RCTL
-#define LCTL LCTRL
-#define RCTL RCTRL

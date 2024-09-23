@@ -37,6 +37,7 @@
           pkgs.qemu # needed for native_posix target
 
           pkgs.bossa
+          pkgs.tio
 
           # Uncomment these if you don't have system-wide versions:
           # pkgs.gawk             # awk
