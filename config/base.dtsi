@@ -207,12 +207,12 @@ ZMK_HOLD_TAP(slow_hold,
     )
 
 // tap: comma | shift + tap: semicolon | ctrl + shift + tap: <
-SIMPLE_MORPH(comma_morph, SFT, &kp COMMA, &comma_inner_morph)
 SIMPLE_MORPH(comma_inner_morph, CTL, &kp SEMICOLON, &kp LESS_THAN)
+SIMPLE_MORPH(comma_morph, SFT, &kp COMMA, &comma_inner_morph)
 
 // tap: dot | shift + tap: colon | ctrl + shift + tap: >
-SIMPLE_MORPH(dot_morph, SFT, &kp DOT, &dot_inner_morph)
 SIMPLE_MORPH(dot_inner_morph, CTL, &kp COLON, &kp GREATER_THAN)
+SIMPLE_MORPH(dot_morph, SFT, &kp DOT, &dot_inner_morph)
 
 // tap: qmark | shift + tap: excl
 SIMPLE_MORPH(quest_morph, SFT, &kp QMARK, &kp EXCL)
