@@ -14,7 +14,7 @@
 
 #define DEF 0
 #define NAV 1
-#define FUN 2
+#define SYM 2
 #define NUM 3
 #define SYS 4
 #define MOUSE 5

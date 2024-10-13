@@ -18,9 +18,9 @@
 #define __RCTL__O__ &hmr RCTL O
 
 #define __SPC_NAV__ &lt_spc NAV 0
-#define __FUN_RPT__ &lt FUN &key_repeat
+#define __SYM_RPT__ &lt SYM &key_repeat
 
-ZMK_CONDITIONAL_LAYER(sys, FUN NUM, SYS)  // FN + NUM --> SYS
+ZMK_CONDITIONAL_LAYER(sys, SYM NUM, SYS)  // FN + NUM --> SYS
 
 ZMK_LAYER(base,
 //╭─────────────┬─────────────────────────────────────────┬─────────────╮ ╭─────────────┬───────────────────────────┬─────────────┬─────────────╮
@@ -30,7 +30,7 @@ ZMK_LAYER(base,
 //╰─────────────┼─────────────z─────────────v─────────────┼─────────────┤ ├─────────────┼─────────────k───────────────────────────┼─────────────╯
                   _____X_____   _____C_____   _____D_____                                 _____H_____   m__COMMA__m   m___DOT___m
 //              ╰─────────────┴─────────────┴─────────────╯                             ╰─────────────┴─────────────┴─────────────╯
-                                              __FUN_RPT__   __SPC_NAV__     _SMRT_SHFT_   _SMRT__NUM_                                                 
+                                              __SYM_RPT__   __SPC_NAV__     _SMRT_SHFT_   _SMRT__NUM_                                                 
 //                                          ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
 )
 
