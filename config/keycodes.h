@@ -40,30 +40,30 @@
 #define _____8_____ &kp N8
 #define _____9_____ &kp N9
 
-#define _BACKSLASH_ &kp BACKSLASH
-#define ___COMMA___ &kp COMMA
-#define ___COLON___ &kp COLON
-#define ____DOT____ &kp DOT
-#define ___EQUAL___ &kp EQUAL
-#define ___GRAVE___ &kp GRAVE
-#define ___MINUS___ &kp MINUS
-#define ___SQUOT___ &kp SINGLE_QUOTE
-#define ___DQUOT___ &kp DOUBLE_QUOTES
-#define _SEMICOLON_ &kp SEMICOLON
-#define ___SLASH___ &kp SLASH
-#define ____AMP____ &kp AMPERSAND
-#define ___UNDRS___ &kp UNDERSCORE
-#define ___PLUS____ &kp PLUS
-#define ___PIPE____ &kp PIPE
+#define _BACKSLASH_ &kp BACKSLASH //
+#define ___COMMA___ &kp COMMA //
+#define ___COLON___ &kp COLON //
+#define ____DOT____ &kp DOT //
+#define ___EQUAL___ &kp EQUAL //
+#define ___GRAVE___ &kp GRAVE //
+#define ___MINUS___ &kp MINUS //
+#define ___SQUOT___ &kp SINGLE_QUOTE //
+#define ___DQUOT___ &kp DOUBLE_QUOTES //
+#define _SEMICOLON_ &kp SEMICOLON //
+#define ___SLASH___ &kp SLASH //
+#define ____AMP____ &kp AMPERSAND //
+#define ___UNDRS___ &kp UNDERSCORE //
+#define ___PLUS____ &kp PLUS //
+#define ___PIPE____ &kp PIPE //
 #define ___STAR____ &kp STAR
 #define ___HASH____ &kp HASH
 #define __DOLLAR___ &kp DOLLAR
 #define __ATSIGN___ &kp AT_SIGN
-#define ___EXCLM___ &kp EXCLAMATION
-#define ___QUEST___ &kp QUESTION
+#define ___EXCLM___ &kp EXCLAMATION //
+#define ___QUEST___ &kp QUESTION //
 #define __PERCENT__ &kp PERCENT
-#define ___CARET___ &kp CARET
-#define ___TILDE___ &kp TILDE
+#define ___CARET___ &kp CARET //
+#define ___TILDE___ &kp TILDE //
 
 #define ___LBRCK___ &kp LEFT_BRACKET      // [
 #define ___LBRCE___ &kp LEFT_BRACE        // {
@@ -121,6 +121,8 @@
 #define RCTL RCTRL
 #define LOPT LALT
 #define ROPT RALT
+#define MOD_LOPT MOD_LALT
+#define MOD_ROPT MOD_RALT
 
 #define ___SHIFT___ &kp LSFT
 #define ___LSHFT___ &kp LSFT

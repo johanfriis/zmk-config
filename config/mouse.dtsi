@@ -25,3 +25,17 @@
 #define U_WH_L &msc SCRL_LEFT
 #define U_WH_R &msc SCRL_RIGHT
 
+
+// #define m_BUTTN_1_m &mkp MB1
+// #define m_BUTTN_2_m &mkp MB2
+// #define m_BUTTN_3_m &mkp MB3
+
+// #define m_MOUSE_U_m &mmv MOVE_Y(-U_MOUSE_MOVE_MAX)
+// #define m_MOUSE_D_m &mmv MOVE_Y(U_MOUSE_MOVE_MAX)
+// #define m_MOUSE_L_m &mmv MOVE_X(-U_MOUSE_MOVE_MAX)
+// #define m_MOUSE_R_m &mmv MOVE_X(U_MOUSE_MOVE_MAX)
+
+// #define m_SCROL_U_m &msc SCRL_Y(-U_MOUSE_SCROLL_MAX) /* */
+// #define m_SCROL_D_m &msc SCRL_Y(U_MOUSE_SCROLL_MAX)
+// #define m_SCROL_L_m &msc SCRL_X(-U_MOUSE_SCROLL_MAX)
+// #define m_SCROL_R_m &msc SCRL_X(U_MOUSE_SCROLL_MAX)

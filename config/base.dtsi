@@ -75,6 +75,13 @@ MAKE_HOLD_TAP(lhm, &kp, &kp, KEYS_R THUMBS)  // left-hand HRMs
 MAKE_HOLD_TAP(rhm, &kp, &kp, KEYS_L THUMBS)  // right-hand HRMs
 MAKE_HOLD_TAP(thumb_alpha, &mo, &kp, KEYS_L KEYS_R THUMBS)  // thumb-alpha layer taps
 
+ZMK_HOLD_TAP(linger,
+    flavor = "balanced";
+    tapping-term-ms = <200>;
+    quick-tap-ms = <QUICK_TAP_MS>;
+    bindings = <&kp>, <&kp>;
+)
+
 // HRM combo hack - workaround for lack of tap-only combos (ZMK issue #544)
 #define ZMK_COMBO_8(NAME, TAP, KEYPOS, LAYERS, COMBO_TERM, COMBO_IDLE, HOLD, SIDE) \
     MAKE_HOLD_TAP(hm_combo_ ## NAME, &kp, TAP, SIDE THUMBS) \
@@ -170,30 +177,10 @@ ZMK_TAP_DANCE(undo_redo,
     tapping-term-ms = <200>;
     bindings = <&kp LG(Z)>, <&kp LG(LS(Z))>;
 )
-ZMK_HOLD_TAP(slow_hold,
-    flavor = "balanced";
-    tapping-term-ms = <200>;
-    quick-tap-ms = <QUICK_TAP_MS>;
-    bindings = <&kp>, <&kp>;
-)
-// tap: copy | hold: cut
-// ZMK_HOLD_TAP(copy_cut,
-//     flavor = "balanced";
-//     tapping-term-ms = <200>;
-//     quick-tap-ms = <QUICK_TAP_MS>;
-//     bindings = <&kp LG(C)>, <&kp LG(X)>;
-// )
-// // tap: paste | hold: select
-// ZMK_HOLD_TAP(paste_select,
-//     flavor = "balanced";
-//     tapping-term-ms = <200>;
-//     quick-tap-ms = <QUICK_TAP_MS>;
-//     bindings = <&kp LG(V)>, <&kp LG(A)>;
-// )
 
 #define _UNDO_REDO_ &undo_redo 
-#define __CPY_CUT__ &slow_hold LG(X) LG(C)
-#define _PSTE_SLCT_ &slow_hold LG(A) LG(V)
+#define __CPY_CUT__ &linger LG(X) LG(C)
+#define _PSTE_SLCT_ &linger LG(A) LG(V)
 
 
 /*****************************************************************************
@@ -207,26 +194,61 @@ ZMK_HOLD_TAP(slow_hold,
         bindings = <BINDING1>, <BINDING2>; \
     )
 
-// tap: comma | shift + tap: semicolon | ctrl + shift + tap: <
-SIMPLE_MORPH(comma_inner_morph, CTL, &kp SEMICOLON, &kp LESS_THAN)
-SIMPLE_MORPH(comma_morph, SFT, &kp COMMA, &comma_inner_morph)
-
-// tap: dot | shift + tap: colon | ctrl + shift + tap: >
-SIMPLE_MORPH(dot_inner_morph, CTL, &kp COLON, &kp GREATER_THAN)
-SIMPLE_MORPH(dot_morph, SFT, &kp DOT, &dot_inner_morph)
-
-// tap: qmark | shift + tap: excl
-SIMPLE_MORPH(quest_morph, SFT, &kp QMARK, &kp EXCL)
-
-// tap: left/right parenthesis | shft + tap: less-than/greater-than
-SIMPLE_MORPH(lparn_morph, SFT, &kp LPAR, &kp LT)
-SIMPLE_MORPH(rparn_morph, SFT, &kp RPAR, &kp GT)
-
-#define m__COMMA__m &comma_morph
+// tap: . | shift + tap: : | opt + tap: !
+SIMPLE_MORPH(__dot_mph, OPT, ____DOT____, ___EXCLM___)
+SIMPLE_MORPH(dot_morph, SFT, &__dot_mph,  ___COLON___)
 #define m___DOT___m &dot_morph
-#define m__QUEST__m &quest_morph
+
+// tap: , | shift + tap: ; | opt + tap: ?
+SIMPLE_MORPH(__comma_mph, OPT, ___COMMA___,  ___QUEST___)
+SIMPLE_MORPH(comma_morph, SFT, &__comma_mph, _SEMICOLON_)
+#define m__COMMA__m &comma_morph
+
+// tap: - | opt + tap: |
+SIMPLE_MORPH(minus_morph, OPT, ___MINUS___,  ____AMP____)
+#define m__MINUS__m &minus_morph
+
+// tap: / | shift + tap: \ | opt + tap: |
+SIMPLE_MORPH(__slash_mph, OPT, ___SLASH___,  ___PIPE____)
+SIMPLE_MORPH(slash_morph, SFT, &__slash_mph, _BACKSLASH_)
+#define m__SLASH__m &slash_morph
+
+// tap: = | opt + tap: ~
+SIMPLE_MORPH(equal_morph, OPT, ___EQUAL___, ___TILDE___)
+#define m__EQUAL__m &equal_morph
+
+// tap: ' | opt + tap: %
+SIMPLE_MORPH(squot_morph, OPT, ___SQUOT___, __PERCENT__ )
+#define m__SQUOT__m &squot_morph
+
+// tap: ` | shift + tap: ^ | opt + tap: !
+SIMPLE_MORPH(__grave_mph, OPT, ___GRAVE___,     ___EXCLM___)
+SIMPLE_MORPH(grave_morph, SFT, &__grave_mph, ___CARET___)
+#define m__GRAVE__m &grave_morph
+
+// m___DOT___m
+// m__COMMA__m
+// m__MINUS__m
+// m__SLASH__m
+// m__GRAVE__m
+// m__SQUOT__m
+
+
+
+// #define m__QUEST__m &quest_morph
+
+// tap: ( / ) | shift + tap: { / }
+SIMPLE_MORPH(lparn_morph, SFT, ___LPARN___ , ___LBRCE___)
+SIMPLE_MORPH(rparn_morph, SFT, ___RPARN___ , ___RBRCE___)
+
+// tap: [ / ] | shift + tap: < / >
+SIMPLE_MORPH(lbrck_morph, SFT, ___LBRCK___, ___LANGB___)
+SIMPLE_MORPH(rbrck_morph, SFT, ___RBRCK___, ___RANGB___)
+
 #define m__LPARN__m &lparn_morph
 #define m__RPARN__m &rparn_morph
+#define m__LBRCK__m &lbrck_morph
+#define m__RBRCK__m &rbrck_morph
 
 
 /*****************************************************************************
