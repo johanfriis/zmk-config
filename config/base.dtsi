@@ -10,6 +10,7 @@
 #endif
 
 #include "zmk-helpers/helper.h"
+#include "zmk-helpers/unicode-chars/danish.dtsi"
 #include "keycodes.h"
 
 #define DEF 0
@@ -43,19 +44,9 @@
     quick-tap-ms = <QUICK_TAP_MS>;
 };
 
-// &leader {  // leader-key config
-//     timeout-ms = <650>;
-// };
-
-/*****************************************************************************
-    Common Keys
- *****************************************************************************/
-
-#undef LCTL
-#undef RCTL
-
-#define LCTL LCTRL
-#define RCTL RCTRL
+&leader {  // leader-key config
+    timeout-ms = <650>;
+};
 
 /*****************************************************************************
     Hold tap helpers
@@ -93,9 +84,8 @@ ZMK_HOLD_TAP(linger,
  *****************************************************************************/
 
 #include "combos.dtsi"  // must be sourced after HRM-combo hack
-// #include "leader.dtsi"
+#include "leader.dtsi"
 #include "mouse.dtsi"
-// #include "extra_keys.h"
 
 
 /*****************************************************************************
