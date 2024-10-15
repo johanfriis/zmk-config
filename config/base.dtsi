@@ -89,6 +89,20 @@ ZMK_HOLD_TAP(linger,
 
 
 /*****************************************************************************
+    Homerow mods
+ *****************************************************************************/
+
+#define __LCTL___ &lhm LCTL
+#define __LOPT___ &lhm LOPT
+#define __LGUI___ &lhm LGUI
+#define __LSFT___ &lhm LSFT
+#define __RSFT___ &rhm RSFT
+#define __RGUI___ &rhm RGUI
+#define __ROPT___ &rhm RALT
+#define __RCTL___ &rhm RCTL
+
+
+/*****************************************************************************
     Caps-word, num-word and smart-mouse
  *****************************************************************************/
 
