@@ -50,7 +50,7 @@
 
 
 /*****************************************************************************
-    Hold tap helpers
+    Helpers
  *****************************************************************************/
 
 #define MAKE_HOLD_TAP(NAME, HOLD, TAP, TRIGGER_POS) \
@@ -75,6 +75,13 @@ MAKE_HOLD_TAP(linger, &kp, &kp, KEYS_L KEYS_R THUMBS)  // linger key
 #define ZMK_COMBO_8(NAME, TAP, KEYPOS, LAYERS, COMBO_TERM, COMBO_IDLE, HOLD, SIDE) \
     MAKE_HOLD_TAP(hm_combo_ ## NAME, &kp, TAP, SIDE THUMBS) \
     ZMK_COMBO_6(NAME, &hm_combo_ ## NAME HOLD 0, KEYPOS, LAYERS, COMBO_TERM, COMBO_IDLE)
+
+// reuse basic mod-morph scheme
+#define SIMPLE_MORPH(NAME, MOD, BINDING1, BINDING2) \
+    ZMK_MOD_MORPH(NAME, \
+        mods = <(MOD_L ## MOD|MOD_R ## MOD)>; \
+        bindings = <BINDING1>, <BINDING2>; \
+    )
 
 
 /*****************************************************************************
@@ -188,13 +195,6 @@ ZMK_TAP_DANCE(undo_redo,
 /*****************************************************************************
     Symbol remapping
  *****************************************************************************/
-
-// reuse basic mod-morph scheme
-#define SIMPLE_MORPH(NAME, MOD, BINDING1, BINDING2) \
-    ZMK_MOD_MORPH(NAME, \
-        mods = <(MOD_L ## MOD|MOD_R ## MOD)>; \
-        bindings = <BINDING1>, <BINDING2>; \
-    )
 
 // tap: . | shift + tap: : | opt + tap: !
 SIMPLE_MORPH(__dot_mph, OPT, ____DOT____, ___EXCLM___)
