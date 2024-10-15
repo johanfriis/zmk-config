@@ -216,29 +216,33 @@ SIMPLE_MORPH(__grave_mph, OPT, ___GRAVE___,     ___EXCLM___)
 SIMPLE_MORPH(grave_morph, SFT, &__grave_mph, ___CARET___)
 #define m__GRAVE__m &grave_morph
 
-// m___DOT___m
-// m__COMMA__m
-// m__MINUS__m
-// m__SLASH__m
-// m__GRAVE__m
-// m__SQUOT__m
-
-
-
-// #define m__QUEST__m &quest_morph
-
 // tap: ( / ) | shift + tap: { / }
 SIMPLE_MORPH(lparn_morph, SFT, ___LPARN___ , ___LBRCE___)
 SIMPLE_MORPH(rparn_morph, SFT, ___RPARN___ , ___RBRCE___)
+#define m__LPARN__m &lparn_morph
+#define m__RPARN__m &rparn_morph
 
 // tap: [ / ] | shift + tap: < / >
 SIMPLE_MORPH(lbrck_morph, SFT, ___LBRCK___, ___LANGB___)
 SIMPLE_MORPH(rbrck_morph, SFT, ___RBRCK___, ___RANGB___)
-
-#define m__LPARN__m &lparn_morph
-#define m__RPARN__m &rparn_morph
 #define m__LBRCK__m &lbrck_morph
 #define m__RBRCK__m &rbrck_morph
+
+// tap: u | opt + tap: @
+SIMPLE_MORPH(kp_u_mph, OPT, _____U_____, __ATSIGN___)
+#define m____U____m &kp_u_mph
+
+// tap: u | opt + tap: *
+SIMPLE_MORPH(kp_o_mph, OPT, _____O_____, ___STAR____)
+#define m____O____m &kp_o_mph
+
+// tap: y | opt + tap: #
+SIMPLE_MORPH(kp_y_mph, OPT, _____Y_____, ___HASH____)
+#define m____Y____m &kp_y_mph
+
+// tap: p | opt + tap: $
+SIMPLE_MORPH(kp_p_mph, OPT, _____P_____, __DOLLAR___)
+#define m____P____m &kp_p_mph
 
 
 /*****************************************************************************
