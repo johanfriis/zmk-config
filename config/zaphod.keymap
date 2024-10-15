@@ -6,9 +6,6 @@
 /* source the base definitions */
 #include "base.dtsi"
 
-#define __R___NAV__ &thumb_alpha NAV R
-// #define __FUN_RPT__ &lt FUN &key_repeat
-
 // ZMK_CONDITIONAL_LAYER(sys, SYM NUM, SYS)  // FN + NUM --> SYS
 
 ZMK_LAYER(base,
@@ -19,7 +16,7 @@ ZMK_LAYER(base,
 //├─────────────┼─────────────z─────────────┼─────────────┼─────────────┤ ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
     _____V_____   _____W_____   _____G_____   _____M_____   _____X_____     m__EQUAL__m   m___DOT___m   m__COMMA__m   m__MINUS__m   m__SLASH__m 
 //╰─────────────┴─────────────┴─────────────┴─────────────┴─────────────┤ ├─────────────┴─────────────┴─────────────┴─────────────┴─────────────╯
-                                              _SMRT_SHFT_   __R___NAV__     _SPACE(SYM)   _SMRT__NUM_
+                                              _SMRT_SHFT_   __NAV____ R     _SPACE(SYM)   _SMRT__NUM_
 //                                          ╰─────────────┴─────────────╯ ╰─────────────┴─────────────╯
 )
 

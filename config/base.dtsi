@@ -67,7 +67,7 @@
 MAKE_HOLD_TAP(lhm, &kp, &kp, KEYS_R THUMBS)  // left-hand HRMs
 MAKE_HOLD_TAP(rhm, &kp, &kp, KEYS_L THUMBS)  // right-hand HRMs
 
-MAKE_HOLD_TAP(thumb_alpha, &mo, &kp, KEYS_L KEYS_R THUMBS)  // thumb-alpha layer taps
+MAKE_HOLD_TAP(layer_alpha, &mo, &kp, KEYS_L KEYS_R THUMBS)  // thumb-alpha layer taps
 
 MAKE_HOLD_TAP(linger, &kp, &kp, KEYS_L KEYS_R THUMBS)  // linger key
 
@@ -94,7 +94,7 @@ MAKE_HOLD_TAP(linger, &kp, &kp, KEYS_L KEYS_R THUMBS)  // linger key
 
 
 /*****************************************************************************
-    Homerow mods
+    Homerow mods & Layer alphas
  *****************************************************************************/
 
 #define __LCTL___ &lhm LCTL
@@ -106,6 +106,11 @@ MAKE_HOLD_TAP(linger, &kp, &kp, KEYS_L KEYS_R THUMBS)  // linger key
 #define __ROPT___ &rhm RALT
 #define __RCTL___ &rhm RCTL
 
+#define __NAV____ &layer_alpha NAV
+#define __SYM____ &layer_alpha SYM
+#define __NUM____ &layer_alpha NUM
+#define __SYS____ &layer_alpha SYS
+#define __MSE____ &layer_alpha MSE
 
 /*****************************************************************************
     Caps-word, num-word and smart-mouse
